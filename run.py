@@ -43,6 +43,19 @@ def high_degree(G, desired_set_size = 10, inner_sim_epoch = 10):
 
     return sum(IC(G, chosen_list))
 
+def hdGreedy(G, k, p=.1):
+    #degree_sequence = sorted([d for n, d in G.degree()])
+    g=[]
+    S=[]
+    for i in range(k):
+        X=G.subgraph(G.nodes()-g)
+        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
+        v=degree_sequence[0][0]
+        S.append(max_score_node)
+        T=runIC(X, [v], p)
+        g=g+T
+        print(S)
+    return S
 
 def IC(G, initial_set):
     number_of_nodes = nx.number_of_nodes(G)
