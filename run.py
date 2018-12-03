@@ -2,7 +2,6 @@ import math
 import numpy as np
 import networkx as nx
 from numpy import random
-import quantumrandom
 import copy
 import timeit
 
