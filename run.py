@@ -32,16 +32,16 @@ def greedy(G, desired_set_size = 10, inner_sim_epoch = 10):
 
     return sum(IC(G, chosen))
 
-def high_degree(G, desired_set_size = 10, inner_sim_epoch = 10):
+def high_degree(G, activating_probability, desired_set_size = 10, inner_sim_epoch = 10):
     number_of_nodes = nx.number_of_nodes(G)
-    degree_sequence = sorted([n for n, d in G.degree()], reverse=True)
-    chosen_set = degree_sequence[:desired_set_size]
+    degree_sequence = sorted(G.degree, key=lambda x: x[1], reverse=True)
+    chosen_set = [name for (name, degree) in degree_sequence[:desired_set_size]]
     chosen_list = [0] * number_of_nodes
     for i in range(number_of_nodes):
         chosen_list[i] = 1 if str(i) in chosen_set else 0
-
-    return sum(IC(G, chosen_list))
-
+    
+    return sum(IC(G, chosen_list, activating_probability))
+        
 def hdGreedy(G, k):
     #degree_sequence = sorted([d for n, d in G.degree()])
     g=[]
