@@ -68,15 +68,15 @@ def IC(G, initial_set):
     while new_node_activated:
         # when some node is activated
         new_node_activated = False
-        for i in range(number_of_nodes):
-            nodes_activation = [0] * number_of_nodes
-            if newly_activated_nodes[i] == 1:
+        nodes_activation = [0] * number_of_nodes
+        for i in G.nodes():
+            if newly_activated_nodes[int(i)] == 1:
                 randn = random.rand(number_of_nodes)
-                for j in range(number_of_nodes):
-                    if randn[j] >  100* activating_probability[i][j]:
+                for j in G.neighbors(i):
+                    if randn[int(j)] > 15*activating_probability[int(i)][int(j)] and activated_nodes[int(j)] == 0:
                         # if the random number is greater than the activation probability
-                        nodes_activation[j] = 1
-                        activated_nodes[j] = 1
+                        nodes_activation[int(j)] = 1
+                        activated_nodes[int(j)] = 1
                         new_node_activated = True
         newly_activated_nodes = copy.deepcopy(nodes_activation)
 
