@@ -58,26 +58,28 @@ def hdGreedy(G, k):
         print(len(g))
     return len(g)
 
-def IC(G, initial_set):
+
+def IC(G, initial_set,activating_probability):
     number_of_nodes = nx.number_of_nodes(G)
     new_node_activated = True
     activated_nodes = copy.deepcopy(initial_set)
     newly_activated_nodes = copy.deepcopy(activated_nodes)
-    activating_probability = random.rand(number_of_nodes,number_of_nodes)
     while new_node_activated:
         # when some node is activated
         new_node_activated = False
         nodes_activation = [0] * number_of_nodes
-        for i in G.nodes():
-            if newly_activated_nodes[int(i)] == 1:
-                randn = random.rand(number_of_nodes)
-                for j in G.neighbors(i):
-                    if randn[int(j)] > 15*activating_probability[int(i)][int(j)] and activated_nodes[int(j)] == 0:
-                        # if the random number is greater than the activation probability
-                        nodes_activation[int(j)] = 1
-                        activated_nodes[int(j)] = 1
-                        new_node_activated = True
-        newly_activated_nodes = copy.deepcopy(nodes_activation)
+        for i in newly_activated_nodes:
+            randn = random.rand(number_of_nodes)
+            for j in G.neighbors(str(i)):
+                if randn[int(j)] < activating_probability[int(i)][int(j)] and activated_nodes[int(j)] == 0:
+                    # if the random number is greater than the activation probability
+                    nodes_activation[int(j)] = 1
+                    activated_nodes[int(j)] = 1
+                    new_node_activated = True
+        newly_activated_nodes = []
+        for k in range(number_of_nodes):
+            if nodes_activation[k] == 1:
+                newly_activated_nodes.append(k)
 
     return activated_nodes
 
