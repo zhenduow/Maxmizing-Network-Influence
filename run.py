@@ -7,8 +7,6 @@ import copy
 import timeit
 
 def greedy(G, desired_set_size = 10, inner_sim_epoch = 10):
-    number_of_nodes = nx.number_of_nodes(G)
-    number_of_edges = nx.number_of_edges(G)
 
     chosen = []
 
@@ -61,7 +59,7 @@ def hdGreedy(G, k):
 
 
 def IC(G, initial_set):
-    number_of_nodes = nx.number_of_nodes(G)
+    
     new_node_activated = True
     activated_nodes = copy.deepcopy(initial_set)
     newly_activated_nodes = copy.deepcopy(activated_nodes)
