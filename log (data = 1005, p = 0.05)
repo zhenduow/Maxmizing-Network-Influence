@@ -42,7 +42,7 @@ Iter =  7 , vertex  664  is chosen with score  284.6
 Iter =  8 , vertex  838  is chosen with score  284.85
 ['58', '252', '665', '329', '87', '714', '740', '664', '838', '795']
 Iter =  9 , vertex  795  is chosen with score  288.5
-Greedy algorithm (paper) final spread 237
+Greedy algorithm (paper) final spread 237 (20次均值288.5)
 Greedy algorithm (paper) time elapsed 10922.785217416586
 
 
