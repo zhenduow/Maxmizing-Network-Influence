@@ -121,5 +121,5 @@ if __name__ == "__main__":
     print("Greedy algorithm (paper) time elapsed {}".format(timeit.default_timer() - start_time))
 
     start_time = timeit.default_timer()
-    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G, desired_set_size, simulation_round)))
+    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G, desired_set_size)))
     print("High-degree greedy algorithm time elapsed {}".format(timeit.default_timer() - start_time))
