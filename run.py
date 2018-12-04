@@ -7,9 +7,7 @@ import copy
 import timeit
 
 def greedy(G, desired_set_size = 10, inner_sim_epoch = 10):
-
     chosen = []
-
     for i in range(desired_set_size):
         max_score = 0
         max_score_edge = 0
@@ -40,26 +38,8 @@ def high_degree(G, desired_set_size = 10, inner_sim_epoch = 10):
 
     return len(IC(G, chosen_set))
 
-        
-def hdGreedy(G, k):
-    #degree_sequence = sorted([d for n, d in G.degree()])
-    g=[]
-    S=[]
-    for i in range(k):
-        X=G.subgraph(G.nodes()-g)
-        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
-        v=degree_sequence[0][0]
-        #print(degree_sequence[0])
-        S.append(v)
-        T=runIC(X, [v])
-        g=g+T
-        
-        print(len(g))
-    return len(g)
-
 
 def IC(G, initial_set):
-    
     new_node_activated = True
     activated_nodes = copy.deepcopy(initial_set)
     newly_activated_nodes = copy.deepcopy(activated_nodes)
@@ -79,11 +59,28 @@ def IC(G, initial_set):
     return activated_nodes
 
 
+def hdGreedy(G, k):
+    # degree_sequence = sorted([d for n, d in G.degree()])
+    g = []
+    S = []
+    for i in range(k):
+        X = G.subgraph(G.nodes() - g)
+        degree_sequence = sorted(X.degree, key=lambda x: x[1], reverse=True)
+        v = degree_sequence[0][0]
+        # print(degree_sequence[0])
+        S.append(v)
+        T = IC(X, [v])
+        g = g + T
+
+        print(len(g))
+    return len(g)
+
+
 if __name__ == "__main__":
     G = nx.read_edgelist("./1005edges")
     #G = nx.read_edgelist("./toy")
     for u,v,e in G.edges(data = True):
-        e['weight'] = random.uniform(0,1)/10
+        e['weight'] = random.uniform(0,1)/100
 
     start = timeit.timeit()
     print("High-degree algorithm final spread {}".format(high_degree(G)))
@@ -94,3 +91,8 @@ if __name__ == "__main__":
     print("Greedy algorithm (paper) final spread {}".format(greedy(G)))
     end = timeit.timeit()
     print("Greedy algorithm (paper) time elapsed {}".format(end -start))
+
+    start = timeit.timeit()
+    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G)))
+    end = timeit.timeit()
+    print("High-degree greedy algorithm time elapsed {}".format(end -start))
