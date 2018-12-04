@@ -31,7 +31,7 @@ def greedy(G, desired_set_size = 10, inner_sim_epoch = 10):
         chosen.append(max_score_node)
         print(chosen)
 
-        print("Iter = ", j , ", vertex ", max_score_edge, " is chosen with score ", max_score/inner_sim_epoch)
+        print("Iter = ", max_score_node , ", vertex ", max_score_edge, " is chosen with score ", max_score/inner_sim_epoch)
 
     return len(IC(G, chosen))
 
