@@ -6,7 +6,7 @@ import quantumrandom
 import copy
 import timeit
 
-def greedy(G, desired_set_size = 10, inner_sim_epoch = 10):
+def greedy(G, desired_set_size, inner_sim_epoch = 10):
     chosen = []
     for i in range(desired_set_size):
         max_score = 0
@@ -31,7 +31,7 @@ def greedy(G, desired_set_size = 10, inner_sim_epoch = 10):
 
     return len(IC(G, chosen))
 
-def high_degree(G, desired_set_size = 10, inner_sim_epoch = 10):
+def high_degree(G, desired_set_size, inner_sim_epoch = 10):
     number_of_nodes = nx.number_of_nodes(G)
     degree_sequence = sorted(G.degree, key=lambda x: x[1], reverse=True)
     chosen_set = [name for (name, degree) in degree_sequence[:desired_set_size]]
@@ -81,18 +81,18 @@ if __name__ == "__main__":
     #G = nx.read_edgelist("./toy")
     for u,v,e in G.edges(data = True):
         e['weight'] = random.uniform(0,1)/100
-
+    desired_set_size = 10
     start = timeit.timeit()
-    print("High-degree algorithm final spread {}".format(high_degree(G)))
+    print("High-degree algorithm final spread {}".format(high_degree(G, desired_set_size)))
     end = timeit.timeit()
     print("High-degree algorithm time elapsed {}".format(end -start))
 
     start = timeit.timeit()
-    print("Greedy algorithm (paper) final spread {}".format(greedy(G)))
+    print("Greedy algorithm (paper) final spread {}".format(greedy(G, desired_set_size)))
     end = timeit.timeit()
     print("Greedy algorithm (paper) time elapsed {}".format(end -start))
 
     start = timeit.timeit()
-    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G)))
+    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G, desired_set_size)))
     end = timeit.timeit()
     print("High-degree greedy algorithm time elapsed {}".format(end -start))
