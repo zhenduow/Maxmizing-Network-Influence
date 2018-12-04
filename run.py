@@ -35,8 +35,11 @@ def high_degree(G, desired_set_size, inner_sim_epoch = 10):
     number_of_nodes = nx.number_of_nodes(G)
     degree_sequence = sorted(G.degree, key=lambda x: x[1], reverse=True)
     chosen_set = [name for (name, degree) in degree_sequence[:desired_set_size]]
-
-    return len(IC(G, chosen_set))
+    print(chosen_set)
+    res = 0
+    for iter in range(inner_sim_epoch):
+        res += len(IC(G, chosen_set))
+    return res/inner_sim_epoch
 
 
 def IC(G, initial_set):
@@ -71,7 +74,7 @@ def hdGreedy(G, k):
         S.append(v)
         T = IC(X, [v])
         g = g + T
-
+        print(S)
         print(len(g))
     return len(g)
 
@@ -80,19 +83,16 @@ if __name__ == "__main__":
     G = nx.read_edgelist("./1005edges")
     #G = nx.read_edgelist("./toy")
     for u,v,e in G.edges(data = True):
-        e['weight'] = random.uniform(0,1)/100
+        e['weight'] = random.uniform(0,1)/20
     desired_set_size = 10
-    start = timeit.timeit()
+    start_time = timeit.default_timer()
     print("High-degree algorithm final spread {}".format(high_degree(G, desired_set_size)))
-    end = timeit.timeit()
-    print("High-degree algorithm time elapsed {}".format(end -start))
+    print("High-degree algorithm time elapsed {}".format(timeit.default_timer() - start_time))
 
-    start = timeit.timeit()
+    start_time = timeit.default_timer()
     print("Greedy algorithm (paper) final spread {}".format(greedy(G, desired_set_size)))
-    end = timeit.timeit()
-    print("Greedy algorithm (paper) time elapsed {}".format(end -start))
+    print("Greedy algorithm (paper) time elapsed {}".format(timeit.default_timer() - start_time))
 
-    start = timeit.timeit()
+    start_time = timeit.default_timer()
     print("High-degree greedy algorithm final spread {}".format(hdGreedy(G, desired_set_size)))
-    end = timeit.timeit()
-    print("High-degree greedy algorithm time elapsed {}".format(end -start))
+    print("High-degree greedy algorithm time elapsed {}".format(timeit.default_timer() - start_time))
