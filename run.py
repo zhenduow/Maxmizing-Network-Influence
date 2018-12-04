@@ -6,7 +6,7 @@ import quantumrandom
 import copy
 import timeit
 
-def greedy(G, desired_set_size, inner_sim_epoch = 10):
+def greedy(G, desired_set_size, simulation_round):
     chosen = []
     for i in range(desired_set_size):
         max_score = 0
@@ -17,7 +17,7 @@ def greedy(G, desired_set_size, inner_sim_epoch = 10):
                 score = 0
                 new_chosen = copy.deepcopy(chosen)
                 new_chosen.append(j)
-                for iter in range(inner_sim_epoch):
+                for iter in range(simulation_round):
                     score += len(IC(G, new_chosen))
 
                 if score > max_score:
@@ -27,19 +27,21 @@ def greedy(G, desired_set_size, inner_sim_epoch = 10):
         chosen.append(max_score_node)
         print(chosen)
 
-        print("Iter = ", i , ", vertex ", max_score_node, " is chosen with score ", max_score/inner_sim_epoch)
+        print("Iter = ", i , ", vertex ", max_score_node, " is chosen with score ", max_score/simulation_round)
 
     return len(IC(G, chosen))
 
-def high_degree(G, desired_set_size, inner_sim_epoch = 10):
-    number_of_nodes = nx.number_of_nodes(G)
+def high_degree(G, desired_set_size, simulation_round):
     degree_sequence = sorted(G.degree, key=lambda x: x[1], reverse=True)
-    chosen_set = [name for (name, degree) in degree_sequence[:desired_set_size]]
-    print(chosen_set)
-    res = 0
-    for iter in range(inner_sim_epoch):
-        res += len(IC(G, chosen_set))
-    return res/inner_sim_epoch
+    for i in range(desired_set_size+1):
+        chosen_set = [name for (name, degree) in degree_sequence[:i]]
+        if i > 0:
+            print(chosen_set)
+            res = 0
+            for iter in range(simulation_round):
+                res += len(IC(G, chosen_set))
+            print(res/simulation_round)
+    return res/simulation_round
 
 
 def IC(G, initial_set):
@@ -52,7 +54,8 @@ def IC(G, initial_set):
         nodes_activation = []
         for i in newly_activated_nodes:
             for j in G.neighbors(str(i)):
-                if random.uniform(0,1) < G.edges[u, v]['weight'] and j not in activated_nodes:
+                randn = random.uniform(0,1)
+                if randn < G.edges[u, v]['weight'] and j not in activated_nodes:
                     # if the random number is greater than the activation probability
                     nodes_activation.append(j)
                     activated_nodes.append(j)
@@ -85,14 +88,15 @@ if __name__ == "__main__":
     for u,v,e in G.edges(data = True):
         e['weight'] = random.uniform(0,1)/20
     desired_set_size = 10
+    simulation_round = 20
     start_time = timeit.default_timer()
-    print("High-degree algorithm final spread {}".format(high_degree(G, desired_set_size)))
+    print("High-degree algorithm final spread {}".format(high_degree(G, desired_set_size, simulation_round)))
     print("High-degree algorithm time elapsed {}".format(timeit.default_timer() - start_time))
 
     start_time = timeit.default_timer()
-    print("Greedy algorithm (paper) final spread {}".format(greedy(G, desired_set_size)))
+    print("Greedy algorithm (paper) final spread {}".format(greedy(G, desired_set_size, simulation_round)))
     print("Greedy algorithm (paper) time elapsed {}".format(timeit.default_timer() - start_time))
 
     start_time = timeit.default_timer()
-    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G, desired_set_size)))
+    print("High-degree greedy algorithm final spread {}".format(hdGreedy(G, desired_set_size, simulation_round)))
     print("High-degree greedy algorithm time elapsed {}".format(timeit.default_timer() - start_time))
