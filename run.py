@@ -88,21 +88,46 @@ def IC(G, initial_set):
     return activated_nodes
 
 
-def hdGreedy(G, k):
-    # degree_sequence = sorted([d for n, d in G.degree()])
-    g = []
-    S = []
+def hdGreedy1(G, k):
+    #degree_sequence = sorted([d for n, d in G.degree()])
+    S=[]
+    print("num_node",nx.number_of_nodes(G))
     for i in range(k):
-        X = G.subgraph(G.nodes() - g)
-        degree_sequence = sorted(X.degree, key=lambda x: x[1], reverse=True)
-        v = degree_sequence[0][0]
-        # print(degree_sequence[0])
-        S.append(v)
-        T = IC(X, [v])
-        g = g + T
-        print(S)
-        print(len(g))
+        g=runIC(G,S)
+        X=G.subgraph(G.nodes()-g)
+        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
+        v=degree_sequence[0][0]
+        #if i==0:
+        #    v='999'
+        print("num_X", nx.number_of_nodes(X))
+        print("choosen v",degree_sequence[0])
+        #print(degree_sequence)
+        S.append(v)       
+        #print(len(g))
+        print(len(runIC(G,S)))
     return len(g)
+   
+def hdGreedy(G, k):
+    #degree_sequence = sorted([d for n, d in G.degree()])
+    S=[]
+    print("num_node",nx.number_of_nodes(G))
+    for i in range(k):
+        g=runIC(G,S)
+        X=G.subgraph(G.nodes()-g)
+        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
+        v=degree_sequence[0][0]
+        #if i==0:
+        #    v='999'
+        print("num_X", nx.number_of_nodes(X))
+        print("choosen v",degree_sequence[0])
+        #print(degree_sequence)
+        S.append(v)       
+        #print(len(g))
+    xx=0    
+    for i in range(100):
+        xx+=(len(runIC(G,S)))
+    print("activation nodes avg",xx/100)
+    return xx/100  
 
 
 if __name__ == "__main__":
