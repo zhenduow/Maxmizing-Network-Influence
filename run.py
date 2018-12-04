@@ -44,6 +44,16 @@ def high_degree(G, desired_set_size, simulation_round):
     return res/simulation_round
 
 
+def ithnodeSpread(parameters):
+    G,activated_nodes,nodes_activation,new_node_activated,j = parameters
+    if random.uniform(0,1) < G.edges[u, v]['weight'] and j not in activated_nodes:
+        # if the random number is greater than the activation probability
+        nodes_activation.append(j)
+        activated_nodes.append(j)
+        new_node_activated = True
+    return nodes_activation,activated_nodes,new_node_activated
+    
+
 def IC(G, initial_set):
     new_node_activated = True
     activated_nodes = copy.deepcopy(initial_set)
@@ -53,13 +63,26 @@ def IC(G, initial_set):
         new_node_activated = False
         nodes_activation = []
         for i in newly_activated_nodes:
-            for j in G.neighbors(str(i)):
-                randn = random.uniform(0,1)
-                if randn < G.edges[u, v]['weight'] and j not in activated_nodes:
-                    # if the random number is greater than the activation probability
-                    nodes_activation.append(j)
-                    activated_nodes.append(j)
+
+            import multiprocessing
+            cores = multiprocessing.cpu_count()
+            pool = multiprocessing.Pool(processes=cores)
+            
+            spreadlist = pool.map(ithnodeSpread,[(G,activated_nodes,nodes_activation,new_node_activated,j) for j in G.neighbors(str(i))])
+
+            for nodes_activation_1,activated_nodes_1,new_node_activated_1 in spreadlist:
+                if(new_node_activated==False and new_node_activated_1==True):
                     new_node_activated = True
+                activated_nodes.extend(activated_nodes_1)
+                nodes_activation.extend(nodes_activation_1)
+
+            # for j in G.neighbors(str(i)):
+            #     randn = random.uniform(0,1)
+            #     if randn < G.edges[u, v]['weight'] and j not in activated_nodes:
+            #         # if the random number is greater than the activation probability
+            #         nodes_activation.append(j)
+            #         activated_nodes.append(j)
+            #         new_node_activated = True
         newly_activated_nodes = copy.deepcopy(nodes_activation)
 
     return activated_nodes
