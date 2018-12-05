@@ -84,8 +84,7 @@ def hdGreedy(G, k):
 
 if __name__ == "__main__":
     G = nx.read_edgelist("./sparse")
-    #G = nx.read_edgelist("./1005edges")
-    #G = nx.read_edgelist("./toy")
+    #G = nx.read_edgelist("./dense")
     for u,v,e in G.edges(data = True):
         e['weight'] = random.uniform(0,1)/10
     desired_set_size = 10
