@@ -1,5 +1,5 @@
 
-with open('running.log','r') as f:
+with open('charts/running.log','r') as f:
     line = f.readline()
     while( '[' not in line):
         line = f.readline()
@@ -17,5 +17,5 @@ with open('running.log','r') as f:
 
         line = f.readline()
         
-        with open('greedy_charts.csv','a') as f1:
+        with open('charts/charts.csv','a') as f1:
             f1.write(','.join([ str(elem) for elem in [targetsize,spreadsize]])+'\n')
