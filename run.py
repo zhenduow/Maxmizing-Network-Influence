@@ -44,16 +44,6 @@ def high_degree(G, desired_set_size, simulation_round):
     return res/simulation_round
 
 
-def ithnodeSpread(parameters):
-    G,activated_nodes,nodes_activation,new_node_activated,j = parameters
-    if random.uniform(0,1) < G.edges[u, v]['weight'] and j not in activated_nodes:
-        # if the random number is greater than the activation probability
-        nodes_activation.append(j)
-        activated_nodes.append(j)
-        new_node_activated = True
-    return nodes_activation,activated_nodes,new_node_activated
-    
-
 def IC(G, initial_set):
     new_node_activated = True
     activated_nodes = copy.deepcopy(initial_set)
@@ -63,119 +53,41 @@ def IC(G, initial_set):
         new_node_activated = False
         nodes_activation = []
         for i in newly_activated_nodes:
-
-            import multiprocessing
-            cores = multiprocessing.cpu_count()
-            pool = multiprocessing.Pool(processes=cores)
-            
-            spreadlist = pool.map(ithnodeSpread,[(G,activated_nodes,nodes_activation,new_node_activated,j) for j in G.neighbors(str(i))])
-
-            for nodes_activation_1,activated_nodes_1,new_node_activated_1 in spreadlist:
-                if(new_node_activated==False and new_node_activated_1==True):
+            for j in G.neighbors(str(i)):
+                randn = random.uniform(0,1)
+                if randn < G.edges[u, v]['weight'] and j not in activated_nodes:
+                    # if the random number is greater than the activation probability
+                    nodes_activation.append(j)
+                    activated_nodes.append(j)
                     new_node_activated = True
-                activated_nodes.extend(activated_nodes_1)
-                nodes_activation.extend(nodes_activation_1)
-
-            # for j in G.neighbors(str(i)):
-            #     randn = random.uniform(0,1)
-            #     if randn < G.edges[u, v]['weight'] and j not in activated_nodes:
-            #         # if the random number is greater than the activation probability
-            #         nodes_activation.append(j)
-            #         activated_nodes.append(j)
-            #         new_node_activated = True
         newly_activated_nodes = copy.deepcopy(nodes_activation)
 
     return activated_nodes
 
-def hdGreedy2(G, k):
-    #degree_sequence = sorted([d for n, d in G.degree()])
-    S=[]
-    print("num_node",nx.number_of_nodes(G))
-    for i in range(k):
-        X=G.subgraph(G.nodes()-S)
-        dict = {}
-        cc=0
-        for j in range(200):
-            g=runIC(G,S)
-            cc+=len(g)
-            for key in g:
-                dict[key] = dict.get(key, 0) + 1
-        #d = {k for k,v in dict.items() if v > 10+5*i}
-        #dd=sorted(G.degree, key=lambda x: x[1], reverse=True)
-        #dd=sorted(dict.iteritems(), key=lambda (k,v): (v,k))
-        dd=sorted(dict.items(), key = 
-             lambda kv:(kv[1], kv[0]), reverse=True)
-        d=dd[:int(len(dd)/5)]
-        print(d)
-        print(cc/200,len(d))
 
-        #print(d)
-        #g=runIC(G,S)
-        #ss=
-        X=G.subgraph(X.nodes()-d)
-            
-        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
-        v=degree_sequence[0][0]
-        #if i==0:
-        #    v='999'
-        print("num_X", nx.number_of_nodes(X))
-        print("choosen v",degree_sequence[0])
-        #print(degree_sequence)
-        S.append(v)       
-        #print(len(g))
-    xx=0    
-    for i in range(100):
-        xx+=(len(runIC(G,S)))
-    print("activation nodes avg",xx/100)
-    return xx/100    
-
-def hdGreedy1(G, k):
-    #degree_sequence = sorted([d for n, d in G.degree()])
-    S=[]
-    print("num_node",nx.number_of_nodes(G))
-    for i in range(k):
-        g=runIC(G,S)
-        X=G.subgraph(G.nodes()-g)
-        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
-        v=degree_sequence[0][0]
-        #if i==0:
-        #    v='999'
-        print("num_X", nx.number_of_nodes(X))
-        print("choosen v",degree_sequence[0])
-        #print(degree_sequence)
-        S.append(v)       
-        #print(len(g))
-        print(len(runIC(G,S)))
-    return len(g)
-   
 def hdGreedy(G, k):
-    #degree_sequence = sorted([d for n, d in G.degree()])
-    S=[]
-    print("num_node",nx.number_of_nodes(G))
+    # degree_sequence = sorted([d for n, d in G.degree()])
+    g = []
+    S = []
     for i in range(k):
-        g=runIC(G,S)
-        X=G.subgraph(G.nodes()-g)
-        degree_sequence=sorted(X.degree, key=lambda x: x[1], reverse=True)
-        v=degree_sequence[0][0]
-        #if i==0:
-        #    v='999'
-        print("num_X", nx.number_of_nodes(X))
-        print("choosen v",degree_sequence[0])
-        #print(degree_sequence)
-        S.append(v)       
-        #print(len(g))
-    xx=0    
-    for i in range(100):
-        xx+=(len(runIC(G,S)))
-    print("activation nodes avg",xx/100)
-    return xx/100  
+        X = G.subgraph(G.nodes() - g)
+        degree_sequence = sorted(X.degree, key=lambda x: x[1], reverse=True)
+        v = degree_sequence[0][0]
+        # print(degree_sequence[0])
+        S.append(v)
+        T = IC(X, [v])
+        g = g + T
+        print(S)
+        print(len(g))
+    return len(g)
 
 
 if __name__ == "__main__":
-    G = nx.read_edgelist("./1005edges")
+    G = nx.read_edgelist("./sparse")
+    #G = nx.read_edgelist("./1005edges")
     #G = nx.read_edgelist("./toy")
     for u,v,e in G.edges(data = True):
-        e['weight'] = random.uniform(0,1)/20
+        e['weight'] = random.uniform(0,1)/10
     desired_set_size = 10
     simulation_round = 20
     start_time = timeit.default_timer()
