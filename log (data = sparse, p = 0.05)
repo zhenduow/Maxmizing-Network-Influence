@@ -66,5 +66,5 @@ Iter =  7 , vertex  21281  is chosen with score  97.4
 Iter =  8 , vertex  19301  is chosen with score  102.05
 ['15003', '22504', '2409', '2621', '25287', '19114', '3719', '21281', '19301', '10791']
 Iter =  9 , vertex  10791  is chosen with score  101.7
-Greedy algorithm (paper) final spread 87 (其实是20次平均的101.7比较准)
+Greedy algorithm (paper) final spread 87 (101.7)
 Greedy algorithm (paper) time elapsed 6071.8615593097975
